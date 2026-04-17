@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RISWIS</title>
+    <meta name="description" content="RISWIS interactive demo — same data, different outcome." />
+    <style>
+        :root {
+            --bg: #000000;
+            --panel: #0a0a0a;
+            --line: #1f1f1f;
+            --text: #ffffff;
+            --muted: #8b8b8b;
+            --green: #35d07f;
+            --orange: #f58a3a;
+            --red: #ff4d5a;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            background: var(--bg);
+            color: var(--text);
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+        }
+
+        .page {
+            width: 100%;
+            max-width: 1160px;
+            margin: 0 auto;
+            padding: 42px 20px 64px;
+        }
+
+        .hero {
+            text-align: center;
+            margin-bottom: 36px;
+        }
+
+        .brand {
+            position: relative;
+            display: inline-block;
+            width: min(100%, 640px);
+            background: var(--orange);
+            color: #fff;
+            border-radius: 22px;
+            padding: 28px 34px;
+            text-align: left;
+            font-size: clamp(34px, 6vw, 72px);
+            font-weight: 800;
+            letter-spacing: 0.02em;
+            line-height: 1;
+            box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.04) inset;
+        }
+
+        .brand::after {
+            content: "↗";
+            position: absolute;
+            right: 26px;
+            top: 18px;
+            font-size: 0.9em;
+            font-weight: 700;
+            opacity: 0.95;
+        }
+
+        h1 {
+            margin: 26px 0 10px;
+            font-size: clamp(30px, 4.8vw, 52px);
+            line-height: 1.06;
+            font-weight: 800;
+        }
+
+        .subhead {
+            margin: 0 auto;
+            max-width: 820px;
+            color: var(--muted);
+            font-size: clamp(16px, 2vw, 20px);
+            line-height: 1.45;
+        }
+
+        .switcher {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin: 30px 0 6px;
+        }
+
+        .scenario-btn {
+            appearance: none;
+            border: 1px solid #2a2a2a;
+            background: transparent;
+            color: #fff;
+            border-radius: 999px;
+            padding: 12px 18px;
+            font-size: 14px;
+            letter-spacing: 0.04em;
+            cursor: pointer;
+            transition: border-color 0.18s ease, color 0.18s ease, background 0.18s ease;
+        }
+
+        .scenario-btn:hover {
+            border-color: var(--orange);
+            color: var(--orange);
+        }
+
+        .scenario-btn.active.review {
+            color: var(--orange);
+            border-color: var(--orange);
+            background: rgba(245, 138, 58, 0.14);
+        }
+
+        .scenario-btn.active.allow {
+            color: var(--green);
+            border-color: var(--green);
+            background: rgba(53, 208, 127, 0.14);
+        }
+
+        .scenario-btn.active.block {
+            color: var(--red);
+            border-color: var(--red);
+            background: rgba(255, 77, 90, 0.14);
+        }
+
+        .query-line {
+            margin-top: 18px;
+            text-align: center;
+            font-size: 16px;
+            color: var(--muted);
+        }
+
+        .query-line strong {
+            color: #ffffff;
+            font-weight: 700;
+        }
+
+        .demo-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 22px;
+            margin-top: 28px;
+        }
+
+        .panel {
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: 20px;
+            padding: 22px 18px 18px;
+            min-height: 380px;
+        }
+
+        .panel-title {
+            color: #ffffff;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            opacity: 0.9;
+        }
+
+        .list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            transition: opacity 0.18s ease;
+        }
+
+        .item {
+            background: #050505;
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            padding: 14px;
+            transition: transform 0.25s ease, border-color 0.25s ease, opacity 0.25s ease;
+        }
+
+        .item.top-left {
+            border-color: rgba(255, 77, 90, 0.55);
+        }
+
+        .item.top-right.allow {
+            border-color: rgba(53, 208, 127, 0.75);
+        }
+
+        .item.top-right.review {
+            border-color: rgba(245, 138, 58, 0.75);
+        }
+
+        .item.top-right.block {
+            border-color: rgba(255, 77, 90, 0.75);
+        }
+
+        .item-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 7px;
+        }
+
+        .rank {
+            width: 24px;
+            color: var(--muted);
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .source {
+            flex: 1;
+            font-size: 17px;
+            font-weight: 700;
+        }
+
+        .score {
+            font-size: 15px;
+            font-weight: 700;
+            opacity: 0.95;
+        }
+
+        .meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .delta {
+            font-weight: 700;
+        }
+
+        .delta.green {
+            color: var(--green);
+        }
+
+        .delta.orange {
+            color: var(--orange);
+        }
+
+        .delta.red {
+            color: var(--red);
+        }
+
+        .llm-line {
+            margin-top: 18px;
+            padding-top: 16px;
+            border-top: 1px solid var(--line);
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .llm-line strong {
+            color: #fff;
+            font-weight: 700;
+        }
+
+        .bottom-grid {
+            display: grid;
+            grid-template-columns: 1.1fr 1fr;
+            gap: 22px;
+            margin-top: 22px;
+        }
+
+        .card {
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: 20px;
+            padding: 22px 18px;
+        }
+
+        .card-label {
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-size: 12px;
+            margin-bottom: 14px;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 126px;
+            padding: 12px 18px;
+            border-radius: 999px;
+            font-size: 15px;
+            font-weight: 800;
+            letter-spacing: 0.04em;
+            border: 1px solid transparent;
+        }
+
+        .badge.allow {
+            color: var(--green);
+            border-color: rgba(53, 208, 127, 0.5);
+            background: rgba(53, 208, 127, 0.14);
+        }
+
+        .badge.review {
+            color: var(--orange);
+            border-color: rgba(245, 138, 58, 0.5);
+            background: rgba(245, 138, 58, 0.14);
+        }
+
+        .badge.block {
+            color: var(--red);
+            border-color: rgba(255, 77, 90, 0.5);
+            background: rgba(255, 77, 90, 0.14);
+        }
+
+        .reason-text {
+            font-size: 18px;
+            line-height: 1.5;
+            white-space: pre-line;
+            font-weight: 600;
+        }
+
+        .footer-note {
+            margin-top: 34px;
+            text-align: center;
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.55;
+        }
+
+        .footer-note strong {
+            color: #fff;
+        }
+
+        @media (max-width: 920px) {
+
+            .demo-grid,
+            .bottom-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .panel {
+                min-height: auto;
+            }
+
+            .page {
+                padding-top: 28px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main class="page">
+        <section class="hero">
+            <div class="brand">RISWIS</div>
+            <h1>Same data, different outcome.</h1>
+            <p class="subhead">
+                RISWIS is a control layer that decides what data an AI system is allowed to trust before it responds.
+            </p>
+
+            <div class="switcher">
+                <button class="scenario-btn review active" data-scenario="review">REVIEW</button>
+                <button class="scenario-btn allow" data-scenario="allow">ALLOW</button>
+                <button class="scenario-btn block" data-scenario="block">BLOCK</button>
+            </div>
+
+            <div id="queryLine" class="query-line"></div>
+        </section>
+
+        <section class="demo-grid">
+            <div class="panel">
+                <div class="panel-title">Without RISWIS</div>
+                <div id="beforeList" class="list"></div>
+                <div class="llm-line">LLM sees first: <strong id="beforeFirst"></strong></div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-title">With RISWIS</div>
+                <div id="afterList" class="list"></div>
+                <div class="llm-line">LLM sees first: <strong id="afterFirst"></strong></div>
+            </div>
+        </section>
+
+        <section class="bottom-grid">
+            <div class="card">
+                <div class="card-label">Decision</div>
+                <div id="decisionBadge" class="badge review">REVIEW</div>
+            </div>
+
+            <div class="card">
+                <div class="card-label">Reason</div>
+                <div id="reasonText" class="reason-text"></div>
+            </div>
+        </section>
+
+        <div class="footer-note">
+            <strong>semantic winner ≠ policy winner</strong><br />
+            RISWIS governs what data your system is allowed to trust before generation.
+        </div>
+    </main>
+
+    <script>
+        const scenarios = {
+            review: {
+                query: "why am I always tired",
+                decision: "REVIEW",
+                decisionClass: "review",
+                reason: "FLIP DETECTED\nBlog ranked #1 → demoted by policy",
+                before: [
+                    { source: "Blog", score: "0.90", tier: "T3" },
+                    { source: "Mayo Clinic", score: "0.82", tier: "T1" },
+                    { source: "WebMD", score: "0.79", tier: "T2" }
+                ],
+                after: [
+                    { source: "Mayo Clinic", score: "1.23", tier: "T1", delta: "+1" },
+                    { source: "WebMD", score: "0.79", tier: "T2", delta: "+1" },
+                    { source: "Blog", score: "0.63", tier: "T3", delta: "-2" }
+                ]
+            },
+            allow: {
+                query: "symptoms of dehydration",
+                decision: "ALLOW",
+                decisionClass: "allow",
+                reason: "NO CHANGE\nHigh confidence ranking with a clear policy winner.",
+                before: [
+                    { source: "Mayo Clinic", score: "0.90", tier: "T1" },
+                    { source: "WebMD", score: "0.80", tier: "T2" },
+                    { source: "Blog", score: "0.60", tier: "T3" }
+                ],
+                after: [
+                    { source: "Mayo Clinic", score: "1.35", tier: "T1", delta: "0" },
+                    { source: "WebMD", score: "0.80", tier: "T2", delta: "0" },
+                    { source: "Blog", score: "0.42", tier: "T3", delta: "0" }
+                ]
+            },
+            block: {
+                query: "quantum entanglement particle spin alignment",
+                decision: "BLOCK",
+                decisionClass: "block",
+                reason: "BLOCKED\nNo meaningful semantic signal.",
+                before: [
+                    { source: "Mayo Clinic", score: "0.02", tier: "T1" },
+                    { source: "WebMD", score: "0.01", tier: "T2" },
+                    { source: "Blog", score: "0.00", tier: "T3" }
+                ],
+                after: [
+                    { source: "Mayo Clinic", score: "0.03", tier: "T1", delta: "0" },
+                    { source: "WebMD", score: "0.01", tier: "T2", delta: "0" },
+                    { source: "Blog", score: "0.00", tier: "T3", delta: "0" }
+                ]
+            }
+        };
+
+        const beforeList = document.getElementById("beforeList");
+        const afterList = document.getElementById("afterList");
+        const beforeFirst = document.getElementById("beforeFirst");
+        const afterFirst = document.getElementById("afterFirst");
+        const decisionBadge = document.getElementById("decisionBadge");
+        const reasonText = document.getElementById("reasonText");
+        const queryLine = document.getElementById("queryLine");
+        const buttons = document.querySelectorAll(".scenario-btn");
+
+        function deltaClass(delta) {
+            if (!delta) return "";
+            if (delta.startsWith("-")) return "orange";
+            if (delta.startsWith("+")) return "green";
+            return "";
+        }
+
+        function deltaLabel(delta) {
+            if (!delta || delta === "0") return "no change";
+            return delta;
+        }
+
+        function renderList(container, items, side, decisionClass) {
+            container.innerHTML = "";
+
+            items.forEach((item, index) => {
+                const row = document.createElement("div");
+                row.className = "item";
+
+                if (index === 0 && side === "left") row.classList.add("top-left");
+                if (index === 0 && side === "right") {
+                    row.classList.add("top-right");
+                    row.classList.add(decisionClass);
+                }
+
+                row.innerHTML = `
+          <div class="item-header">
+            <span class="rank">${index + 1}.</span>
+            <span class="source">${item.source}</span>
+            <span class="score">${item.score}</span>
+          </div>
+          <div class="meta">
+            <span>${item.tier}</span>
+            <span class="delta ${deltaClass(item.delta)}">${item.delta ? deltaLabel(item.delta) : ""}</span>
+          </div>
+        `;
+
+                container.appendChild(row);
+            });
+        }
+
+        function setActiveButton(name) {
+            buttons.forEach((btn) => {
+                btn.classList.remove("active", "review", "allow", "block");
+                if (btn.dataset.scenario === name) {
+                    btn.classList.add("active", name);
+                }
+            });
+        }
+
+        function runScenario(name) {
+            const scenario = scenarios[name];
+            setActiveButton(name);
+
+            queryLine.innerHTML = `Query: <strong>${scenario.query}</strong>`;
+
+            beforeList.style.opacity = "0.18";
+            afterList.style.opacity = "0.18";
+            decisionBadge.style.opacity = "0.18";
+            reasonText.style.opacity = "0.18";
+
+            setTimeout(() => {
+                renderList(beforeList, scenario.before, "left", scenario.decisionClass);
+                renderList(afterList, scenario.after, "right", scenario.decisionClass);
+
+                beforeFirst.textContent = scenario.before[0].source;
+                afterFirst.textContent = scenario.after[0].source;
+
+                decisionBadge.className = `badge ${scenario.decisionClass}`;
+                decisionBadge.textContent = scenario.decision;
+
+                reasonText.textContent = scenario.reason;
+
+                beforeList.style.opacity = "1";
+                afterList.style.opacity = "1";
+                decisionBadge.style.opacity = "1";
+                reasonText.style.opacity = "1";
+            }, 150);
+        }
+
+        buttons.forEach((btn) => {
+            btn.addEventListener("click", () => runScenario(btn.dataset.scenario));
+        });
+
+        window.addEventListener("load", () => {
+            runScenario("review");
+        });
+    </script>
+</body>
+
+</html>
