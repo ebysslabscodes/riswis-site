@@ -6,6 +6,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>RISWIS</title>
     <meta name="description" content="RISWIS interactive demo — same data, different outcome." />
+
+    <link rel="icon" type="image/png" href="favicon.png" />
+
+    <meta property="og:title" content="RISWIS — Controls what data AI trusts" />
+    <meta property="og:description" content="Similarity finds answers. Governance decides trust." />
+    <meta property="og:image" content="https://riswis.com/preview.png" />
+    <meta property="og:url" content="https://riswis.com" />
+    <meta property="og:type" content="website" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="RISWIS — Controls what data AI trusts" />
+    <meta name="twitter:description" content="Similarity finds answers. Governance decides trust." />
+    <meta name="twitter:image" content="https://riswis.com/preview.png" />
+
+    <script data-goatcounter="https://riswis.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+
     <style>
         :root {
             --bg: #000000;
@@ -324,8 +340,31 @@
             font-weight: 600;
         }
 
+        .interest-note {
+            margin-top: 36px;
+            text-align: center;
+        }
+
+        .contact-btn {
+            display: inline-block;
+            border: 1px solid #2a2a2a;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 700;
+            padding: 12px 28px;
+            border-radius: 999px;
+            letter-spacing: 0.04em;
+            transition: border-color 0.18s ease, color 0.18s ease;
+        }
+
+        .contact-btn:hover {
+            border-color: var(--orange);
+            color: var(--orange);
+        }
+
         .footer-note {
-            margin-top: 34px;
+            margin-top: 20px;
             text-align: center;
             color: var(--muted);
             font-size: 14px;
@@ -358,9 +397,18 @@
     <main class="page">
         <section class="hero">
             <div class="brand">RISWIS</div>
-            <h1>Same data, different outcome.</h1>
+            <div style="margin-top:10px; color: var(--muted); font-size:14px;">
+                Controls what data AI trusts
+            </div>
+
+            <h1>
+                Similarity finds answers.<br>
+                <span style="color: var(--green);">Governance decides trust.</span>
+            </h1>
+
             <p class="subhead">
-                RISWIS is a control layer that decides what data an AI system is allowed to trust before it responds.
+                RISWIS controls what data enters the LLM.<br>
+                Same retrieval. Different decision.
             </p>
 
             <div class="switcher">
@@ -371,6 +419,10 @@
 
             <div id="queryLine" class="query-line"></div>
         </section>
+
+        <div style="margin-bottom:10px; color: var(--muted); font-size:13px; text-align:center;">
+            LLM sees this first:
+        </div>
 
         <section class="demo-grid">
             <div class="panel">
@@ -398,9 +450,13 @@
             </div>
         </section>
 
+        <div class="interest-note">
+            <a href="mailto:ronreed@ebysslabs.com" class="contact-btn">Get in touch</a>
+        </div>
+
         <div class="footer-note">
             <strong>semantic winner ≠ policy winner</strong><br />
-            RISWIS governs what data your system is allowed to trust before generation.
+            RISWIS governs what data your system is allowed to trust before generation.<br />
             © 2026 Ebysslabs (Ronald Reed)
         </div>
     </main>
@@ -492,16 +548,16 @@
                 }
 
                 row.innerHTML = `
-          <div class="item-header">
-            <span class="rank">${index + 1}.</span>
-            <span class="source">${item.source}</span>
-            <span class="score">${item.score}</span>
-          </div>
-          <div class="meta">
-            <span>${item.tier}</span>
-            <span class="delta ${deltaClass(item.delta)}">${item.delta ? deltaLabel(item.delta) : ""}</span>
-          </div>
-        `;
+                    <div class="item-header">
+                        <span class="rank">${index + 1}.</span>
+                        <span class="source">${item.source}</span>
+                        <span class="score">${item.score}</span>
+                    </div>
+                    <div class="meta">
+                        <span>${item.tier}</span>
+                        <span class="delta ${deltaClass(item.delta)}">${item.delta ? deltaLabel(item.delta) : ""}</span>
+                    </div>
+                `;
 
                 container.appendChild(row);
             });
