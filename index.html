@@ -4,391 +4,291 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>RISWIS</title>
-    <meta name="description" content="RISWIS interactive demo — same data, different outcome." />
+    <title>RISWIS Applied</title>
+    <meta name="description" content="RISWIS Applied — governance layer before the LLM sees anything." />
 
     <link rel="icon" type="image/png" href="favicon.png" />
     <link rel="canonical" href="https://riswis.com" />
 
-    <meta property="og:title" content="RISWIS — Controls what data AI trusts" />
+    <meta property="og:title" content="RISWIS Applied — Controls what data AI trusts" />
     <meta property="og:description" content="Similarity finds answers. Governance decides trust." />
-    <meta property="og:image" content="https://riswis.com/preview.png?v=2" />
+    <meta property="og:image" content="https://riswis.com/preview.png?v=3" />
     <meta property="og:url" content="https://riswis.com" />
     <meta property="og:type" content="website" />
 
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="RISWIS — Controls what data AI trusts" />
+    <meta name="twitter:title" content="RISWIS Applied — Controls what data AI trusts" />
     <meta name="twitter:description" content="Similarity finds answers. Governance decides trust." />
-    <meta name="twitter:image" content="https://riswis.com/preview.png?v=2" />
+    <meta name="twitter:image" content="https://riswis.com/preview.png?v=3" />
 
     <script data-goatcounter="https://riswis.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 
     <style>
         :root {
-            --bg: #000000;
-            --panel: #0a0a0a;
-            --line: #1f1f1f;
-            --text: #ffffff;
-            --muted: #8b8b8b;
+            --bg: #0e1117;
+            --panel: #151922;
+            --input: #262933;
+            --line: #343946;
+            --text: #f5f5f5;
+            --muted: #a0a4ad;
             --green: #35d07f;
+            --green-bg: rgba(53, 208, 127, 0.16);
             --orange: #f58a3a;
+            --orange-bg: rgba(245, 138, 58, 0.18);
             --red: #ff4d5a;
+            --red-bg: rgba(255, 77, 90, 0.18);
+            --blue-bg: #1f314b;
+            --blue-text: #72a7ff;
         }
 
         * {
             box-sizing: border-box;
         }
 
-        html,
         body {
             margin: 0;
-            padding: 0;
             background: var(--bg);
             color: var(--text);
             font-family: Arial, Helvetica, sans-serif;
         }
 
-        body {
-            min-height: 100vh;
-        }
-
         .page {
             width: 100%;
-            max-width: 1160px;
+            max-width: 980px;
             margin: 0 auto;
-            padding: 42px 20px 64px;
-        }
-
-        .hero {
-            text-align: center;
-            margin-bottom: 36px;
-        }
-
-        .brand {
-            position: relative;
-            display: inline-block;
-            width: min(100%, 640px);
-            background: var(--orange);
-            color: #fff;
-            border-radius: 22px;
-            padding: 28px 34px;
-            text-align: left;
-            font-size: clamp(34px, 6vw, 72px);
-            font-weight: 800;
-            letter-spacing: 0.02em;
-            line-height: 1;
-            box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.04) inset;
-        }
-
-        .brand::after {
-            content: "↗";
-            position: absolute;
-            right: 26px;
-            top: 18px;
-            font-size: 0.9em;
-            font-weight: 700;
-            opacity: 0.95;
+            padding: 72px 22px 70px;
         }
 
         h1 {
-            margin: 26px 0 10px;
-            font-size: clamp(30px, 4.8vw, 52px);
-            line-height: 1.06;
+            font-size: clamp(44px, 7vw, 72px);
+            margin: 0 0 28px;
+            line-height: 1;
+            letter-spacing: -0.04em;
             font-weight: 800;
         }
 
-        .subhead {
-            margin: 0 auto;
-            max-width: 820px;
+        .caption {
             color: var(--muted);
-            font-size: clamp(16px, 2vw, 20px);
+            font-size: 20px;
             line-height: 1.45;
+            margin-bottom: 34px;
         }
 
-        .switcher {
-            display: flex;
-            justify-content: center;
-            gap: 12px;
-            flex-wrap: wrap;
-            margin: 30px 0 6px;
+        label {
+            display: block;
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: #fff;
         }
 
-        .scenario-btn {
-            appearance: none;
-            border: 1px solid #2a2a2a;
+        select,
+        input {
+            width: 100%;
+            border: 1px solid transparent;
+            background: var(--input);
+            color: var(--text);
+            border-radius: 12px;
+            padding: 18px 18px;
+            font-size: 22px;
+            outline: none;
+            margin-bottom: 28px;
+        }
+
+        input:disabled {
+            opacity: 0.75;
+            color: var(--muted);
+        }
+
+        .guided-note {
+            background: var(--blue-bg);
+            color: var(--blue-text);
+            border-radius: 12px;
+            padding: 20px 22px;
+            font-size: 20px;
+            line-height: 1.45;
+            margin-bottom: 26px;
+        }
+
+        button {
             background: transparent;
             color: #fff;
-            border-radius: 999px;
-            padding: 12px 18px;
-            font-size: 14px;
-            letter-spacing: 0.04em;
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            padding: 15px 20px;
+            font-size: 22px;
             cursor: pointer;
-            transition: border-color 0.18s ease, color 0.18s ease, background 0.18s ease;
+            transition: 0.18s ease;
         }
 
-        .scenario-btn:hover {
+        button:hover {
             border-color: var(--orange);
             color: var(--orange);
         }
 
-        .scenario-btn.active.review {
-            color: var(--orange);
-            border-color: var(--orange);
-            background: rgba(245, 138, 58, 0.14);
+        .section {
+            margin-top: 46px;
         }
 
-        .scenario-btn.active.allow {
-            color: var(--green);
-            border-color: var(--green);
-            background: rgba(53, 208, 127, 0.14);
+        .section h2 {
+            font-size: 38px;
+            margin: 0 0 24px;
+            letter-spacing: -0.03em;
         }
 
-        .scenario-btn.active.block {
-            color: var(--red);
-            border-color: var(--red);
-            background: rgba(255, 77, 90, 0.14);
+        .decision-box,
+        .info-box,
+        .winner-box {
+            border-radius: 12px;
+            padding: 22px 24px;
+            font-size: 22px;
+            line-height: 1.45;
+            margin-bottom: 22px;
         }
 
-        .query-line {
-            margin-top: 18px;
-            text-align: center;
-            font-size: 16px;
-            color: var(--muted);
+        .decision-ALLOW,
+        .allow-box {
+            background: var(--green-bg);
+            color: #9ff0c5;
         }
 
-        .query-line strong {
-            color: #ffffff;
-            font-weight: 700;
+        .decision-REVIEW,
+        .review-box {
+            background: var(--orange-bg);
+            color: #ffd0a8;
         }
 
-        .demo-grid {
+        .decision-BLOCK,
+        .block-box {
+            background: var(--red-bg);
+            color: #ff9ca4;
+        }
+
+        .divider {
+            height: 1px;
+            background: var(--line);
+            margin: 42px 0;
+        }
+
+        .winner-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 22px;
-            margin-top: 28px;
-        }
-
-        .panel {
-            background: var(--panel);
-            border: 1px solid var(--line);
-            border-radius: 20px;
-            padding: 22px 18px 18px;
-            min-height: 380px;
-        }
-
-        .panel-title {
-            color: #ffffff;
-            text-transform: uppercase;
-            letter-spacing: 0.12em;
-            font-size: 14px;
-            font-weight: 700;
-            margin-bottom: 16px;
-            opacity: 0.9;
-        }
-
-        .list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            transition: opacity 0.18s ease;
-        }
-
-        .item {
-            background: #050505;
-            border: 1px solid var(--line);
-            border-radius: 16px;
-            padding: 14px;
-            transition: transform 0.25s ease, border-color 0.25s ease, opacity 0.25s ease;
-        }
-
-        .item.top-left {
-            border-color: rgba(255, 77, 90, 0.55);
-        }
-
-        .item.top-right.allow {
-            border-color: rgba(53, 208, 127, 0.75);
-        }
-
-        .item.top-right.review {
-            border-color: rgba(245, 138, 58, 0.75);
-        }
-
-        .item.top-right.block {
-            border-color: rgba(255, 77, 90, 0.75);
-        }
-
-        .item-header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 7px;
-        }
-
-        .rank {
-            width: 24px;
-            color: var(--muted);
-            font-size: 14px;
-            flex-shrink: 0;
-        }
-
-        .source {
-            flex: 1;
-            font-size: 17px;
-            font-weight: 700;
-        }
-
-        .score {
-            font-size: 15px;
-            font-weight: 700;
-            opacity: 0.95;
-        }
-
-        .meta {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 10px;
-            font-size: 13px;
-            color: var(--muted);
-        }
-
-        .delta {
-            font-weight: 700;
-        }
-
-        .delta.green {
-            color: var(--green);
-        }
-
-        .delta.orange {
-            color: var(--orange);
-        }
-
-        .delta.red {
-            color: var(--red);
-        }
-
-        .llm-line {
-            margin-top: 18px;
-            padding-top: 16px;
-            border-top: 1px solid var(--line);
-            color: var(--muted);
-            font-size: 14px;
-        }
-
-        .llm-line strong {
-            color: #fff;
-            font-weight: 700;
-        }
-
-        .bottom-grid {
-            display: grid;
-            grid-template-columns: 1.1fr 1fr;
-            gap: 22px;
+            gap: 26px;
             margin-top: 22px;
         }
 
-        .card {
-            background: var(--panel);
-            border: 1px solid var(--line);
-            border-radius: 20px;
-            padding: 22px 18px;
-        }
-
-        .card-label {
-            color: var(--muted);
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            font-size: 12px;
-            margin-bottom: 14px;
-        }
-
-        .badge {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            min-width: 126px;
-            padding: 12px 18px;
-            border-radius: 999px;
-            font-size: 15px;
+        .winner-title {
+            font-size: 34px;
             font-weight: 800;
-            letter-spacing: 0.04em;
-            border: 1px solid transparent;
+            margin-bottom: 20px;
+            letter-spacing: -0.03em;
         }
 
-        .badge.allow {
-            color: var(--green);
-            border-color: rgba(53, 208, 127, 0.5);
-            background: rgba(53, 208, 127, 0.14);
+        .results-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            font-size: 21px;
+            line-height: 1.4;
         }
 
-        .badge.review {
-            color: var(--orange);
-            border-color: rgba(245, 138, 58, 0.5);
-            background: rgba(245, 138, 58, 0.14);
-        }
-
-        .badge.block {
-            color: var(--red);
-            border-color: rgba(255, 77, 90, 0.5);
-            background: rgba(255, 77, 90, 0.14);
-        }
-
-        .reason-text {
-            font-size: 18px;
-            line-height: 1.5;
-            white-space: pre-line;
-            font-weight: 600;
-        }
-
-        .interest-note {
-            margin-top: 36px;
-            text-align: center;
-        }
-
-        .contact-btn {
+        .dot {
             display: inline-block;
-            border: 1px solid #2a2a2a;
-            color: #ffffff;
-            text-decoration: none;
-            font-size: 15px;
+            width: 19px;
+            height: 19px;
+            border-radius: 50%;
+            margin-right: 10px;
+            vertical-align: -2px;
+        }
+
+        .dot.green {
+            background: var(--green);
+        }
+
+        .dot.orange {
+            background: var(--orange);
+        }
+
+        .dot.red {
+            background: var(--red);
+        }
+
+        details {
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            padding: 18px 20px;
+            margin-top: 28px;
+        }
+
+        summary {
+            cursor: pointer;
+            font-size: 22px;
             font-weight: 700;
-            padding: 12px 28px;
-            border-radius: 999px;
-            letter-spacing: 0.04em;
-            transition: border-color 0.18s ease, color 0.18s ease;
         }
 
-        .contact-btn:hover {
-            border-color: var(--orange);
-            color: var(--orange);
+        pre {
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-word;
+            color: #d8dee9;
+            font-size: 15px;
+            line-height: 1.5;
         }
 
-        .footer-note {
-            margin-top: 20px;
+        .contact {
             text-align: center;
+            margin-top: 58px;
+        }
+
+        .contact a {
+            display: inline-block;
+            color: #fff;
+            text-decoration: none;
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            padding: 14px 28px;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .contact a:hover {
+            color: var(--orange);
+            border-color: var(--orange);
+        }
+
+        .footer {
+            margin-top: 24px;
             color: var(--muted);
+            text-align: center;
             font-size: 14px;
             line-height: 1.55;
         }
 
-        .footer-note strong {
+        .footer strong {
             color: #fff;
         }
 
-        @media (max-width: 920px) {
+        .hidden {
+            display: none;
+        }
 
-            .demo-grid,
-            .bottom-grid {
+        @media (max-width: 760px) {
+            .page {
+                padding-top: 42px;
+            }
+
+            .winner-grid {
                 grid-template-columns: 1fr;
             }
 
-            .panel {
-                min-height: auto;
+            select,
+            input,
+            button {
+                font-size: 18px;
             }
 
-            .page {
-                padding-top: 28px;
+            .section h2,
+            .winner-title {
+                font-size: 30px;
             }
         }
     </style>
@@ -396,66 +296,91 @@
 
 <body>
     <main class="page">
-        <section class="hero">
-            <div class="brand">RISWIS</div>
-            <div style="margin-top:10px; color: var(--muted); font-size:14px;">
-                Controls what data AI trusts
-            </div>
+        <h1>RISWIS Applied</h1>
 
-            <h1>
-                Similarity finds answers.<br>
-                <span style="color: var(--green);">Governance decides trust.</span>
-            </h1>
-
-            <p class="subhead">
-                RISWIS controls what data enters the LLM.<br>
-                Same retrieval. Different decision.
-            </p>
-
-            <div class="switcher">
-                <button class="scenario-btn review active" data-scenario="review">REVIEW</button>
-                <button class="scenario-btn allow" data-scenario="allow">ALLOW</button>
-                <button class="scenario-btn block" data-scenario="block">BLOCK</button>
-            </div>
-
-            <div id="queryLine" class="query-line"></div>
-        </section>
-
-        <div style="margin-bottom:10px; color: var(--muted); font-size:13px; text-align:center;">
-            LLM sees this first:
+        <div class="caption">
+            Guided demo: RISWIS shows how retrieval is governed before the LLM sees anything
+            (ALLOW · REVIEW · BLOCK).
         </div>
 
-        <section class="demo-grid">
-            <div class="panel">
-                <div class="panel-title">Without RISWIS</div>
-                <div id="beforeList" class="list"></div>
-                <div class="llm-line">LLM sees first: <strong id="beforeFirst"></strong></div>
-            </div>
+        <label for="scenario">Choose a demo scenario</label>
+        <select id="scenario">
+            <option value="review">🟠 REVIEW / Rank Flip — Fatigue</option>
+            <option value="allow">🟢 ALLOW / Clean Pass — Trusted source wins</option>
+            <option value="block">🔴 BLOCK / No Trusted Signal — Irrelevant query</option>
+        </select>
 
-            <div class="panel">
-                <div class="panel-title">With RISWIS</div>
-                <div id="afterList" class="list"></div>
-                <div class="llm-line">LLM sees first: <strong id="afterFirst"></strong></div>
-            </div>
-        </section>
+        <label for="query">Selected query</label>
+        <input id="query" disabled value="why am i always tired" />
 
-        <section class="bottom-grid">
-            <div class="card">
-                <div class="card-label">Decision</div>
-                <div id="decisionBadge" class="badge review">REVIEW</div>
-            </div>
-
-            <div class="card">
-                <div class="card-label">Reason</div>
-                <div id="reasonText" class="reason-text"></div>
-            </div>
-        </section>
-
-        <div class="interest-note">
-            <a href="mailto:ronreed@ebysslabs.com" class="contact-btn">Get in touch</a>
+        <div class="guided-note">
+            This is a guided demo. Each scenario shows a specific RISWIS governance behavior.
         </div>
 
-        <div class="footer-note">
+        <button id="runBtn">Run RISWIS</button>
+
+        <section id="output" class="hidden">
+            <div class="section">
+                <h2>Decision</h2>
+                <div id="decisionBox" class="decision-box"></div>
+                <div id="reasonText" style="font-size:22px; line-height:1.5;"></div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div id="normalView">
+                <div class="winner-grid">
+                    <div>
+                        <div class="winner-title">Semantic Winner</div>
+                        <div id="semanticWinner" class="winner-box block-box"></div>
+                    </div>
+
+                    <div>
+                        <div class="winner-title">Policy Winner</div>
+                        <div id="policyWinner" class="winner-box allow-box"></div>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="section">
+                    <h2>Rank Flip</h2>
+                    <div id="rankFlip" class="info-box"></div>
+                </div>
+
+                <div class="section">
+                    <h2>Results</h2>
+                    <div id="results" class="results-list"></div>
+                </div>
+            </div>
+
+            <div id="blockView" class="hidden">
+                <div class="section">
+                    <h2>Blocked Before Generation</h2>
+                    <div class="winner-box block-box">🔴 No source passed RISWIS governance.</div>
+
+                    <h2 style="margin-top:36px;">Why It Was Blocked</h2>
+                    <div style="font-size:22px; line-height:1.5;">
+                        The retrieved candidates were too weak to safely pass forward.
+                        RISWIS stopped the result before the LLM could use it.
+                    </div>
+
+                    <h2 style="margin-top:36px;">Retrieved Signals</h2>
+                    <div id="signals" class="results-list"></div>
+                </div>
+            </div>
+
+            <details>
+                <summary>Raw API Output</summary>
+                <pre id="rawJson"></pre>
+            </details>
+        </section>
+
+        <div class="contact">
+            <a href="mailto:ronreed@ebysslabs.com">Contact about RISWIS</a>
+        </div>
+
+        <div class="footer">
             <strong>semantic winner ≠ policy winner</strong><br />
             RISWIS governs what data your system is allowed to trust before generation.<br />
             © 2026 Ebysslabs (Ronald Reed)
@@ -465,129 +390,51 @@
     <script>
         const API_URL = "https://riswis-api-demo.onrender.com/demo";
 
-        const scenarioQueries = {
+        const scenarios = {
             review: "why am i always tired",
             allow: "fatigue medical causes",
             block: "quantum particle spin alignment"
         };
 
-        const beforeList = document.getElementById("beforeList");
-        const afterList = document.getElementById("afterList");
-        const beforeFirst = document.getElementById("beforeFirst");
-        const afterFirst = document.getElementById("afterFirst");
-        const decisionBadge = document.getElementById("decisionBadge");
-        const reasonText = document.getElementById("reasonText");
-        const queryLine = document.getElementById("queryLine");
-        const buttons = document.querySelectorAll(".scenario-btn");
+        const scenarioSelect = document.getElementById("scenario");
+        const queryInput = document.getElementById("query");
+        const runBtn = document.getElementById("runBtn");
 
-        function deltaClass(delta) {
-            if (delta > 0) return "green";
-            if (delta < 0) return "orange";
+        const output = document.getElementById("output");
+        const decisionBox = document.getElementById("decisionBox");
+        const reasonText = document.getElementById("reasonText");
+        const semanticWinner = document.getElementById("semanticWinner");
+        const policyWinner = document.getElementById("policyWinner");
+        const rankFlip = document.getElementById("rankFlip");
+        const results = document.getElementById("results");
+        const signals = document.getElementById("signals");
+        const rawJson = document.getElementById("rawJson");
+        const normalView = document.getElementById("normalView");
+        const blockView = document.getElementById("blockView");
+
+        function tierIcon(tier) {
+            if (tier === "T1") return '<span class="dot green"></span>';
+            if (tier === "T2") return '<span class="dot orange"></span>';
+            if (tier === "T3") return '<span class="dot red"></span>';
             return "";
         }
 
-        function tierLabel(tier) {
-            if (tier === "T1") return "T1";
-            if (tier === "T2") return "T2";
-            if (tier === "T3") return "T3";
-            return tier || "";
+        function updateQuery() {
+            queryInput.value = scenarios[scenarioSelect.value];
         }
 
-        function setActiveButton(name) {
-            buttons.forEach((btn) => {
-                btn.classList.remove("active", "review", "allow", "block");
-                if (btn.dataset.scenario === name) {
-                    btn.classList.add("active", name);
-                }
-            });
-        }
+        scenarioSelect.addEventListener("change", updateQuery);
 
-        function renderBefore(items) {
-            beforeList.innerHTML = "";
+        runBtn.addEventListener("click", async () => {
+            const query = queryInput.value;
 
-            const semanticSorted = [...items].sort((a, b) => a.raw_rank - b.raw_rank);
-
-            semanticSorted.forEach((item, index) => {
-                const row = document.createElement("div");
-                row.className = "item";
-                if (index === 0) row.classList.add("top-left");
-
-                row.innerHTML = `
-                <div class="item-header">
-                    <span class="rank">${item.raw_rank}.</span>
-                    <span class="source">${item.source}</span>
-                    <span class="score">${item.raw_score}</span>
-                </div>
-                <div class="meta">
-                    <span>${tierLabel(item.tier)}</span>
-                    <span>semantic rank</span>
-                </div>
-            `;
-
-                beforeList.appendChild(row);
-            });
-
-            beforeFirst.textContent = semanticSorted[0]?.source || "None";
-        }
-
-        function renderAfter(items, decisionClass, decision) {
-            afterList.innerHTML = "";
-
-            items.forEach((item, index) => {
-                const row = document.createElement("div");
-                row.className = "item";
-
-                if (index === 0) {
-                    row.classList.add("top-right");
-                    row.classList.add(decisionClass);
-                }
-
-                const delta = item.rank_delta;
-                const deltaText = delta === 0 ? "no change" : (delta > 0 ? `+${delta}` : `${delta}`);
-
-                row.innerHTML = `
-                <div class="item-header">
-                    <span class="rank">${item.weighted_rank}.</span>
-                    <span class="source">${item.source}</span>
-                    <span class="score">${item.weighted_score}</span>
-                </div>
-                <div class="meta">
-                    <span>${tierLabel(item.tier)}</span>
-                    <span class="delta ${deltaClass(delta)}">${deltaText}</span>
-                </div>
-            `;
-
-                afterList.appendChild(row);
-            });
-
-            if (decision === "BLOCK") {
-                afterFirst.textContent = "Nothing passes";
-            } else {
-                afterFirst.textContent = items[0]?.source || "None";
-            }
-        }
-
-        function decisionClass(decision) {
-            if (decision === "ALLOW") return "allow";
-            if (decision === "REVIEW") return "review";
-            if (decision === "BLOCK") return "block";
-            return "review";
-        }
-
-        async function runScenario(name) {
-            setActiveButton(name);
-
-            const query = scenarioQueries[name];
-            queryLine.innerHTML = `Query: <strong>${query}</strong>`;
-
-            beforeList.style.opacity = "0.18";
-            afterList.style.opacity = "0.18";
-            decisionBadge.style.opacity = "0.18";
-            reasonText.style.opacity = "0.18";
-
-            decisionBadge.className = "badge review";
-            decisionBadge.textContent = "RUNNING";
+            output.classList.remove("hidden");
+            decisionBox.className = "decision-box decision-REVIEW";
+            decisionBox.textContent = "RUNNING";
             reasonText.textContent = "Calling live RISWIS API...";
+            normalView.classList.add("hidden");
+            blockView.classList.add("hidden");
+            rawJson.textContent = "";
 
             try {
                 const response = await fetch(API_URL, {
@@ -603,46 +450,64 @@
                 }
 
                 const data = await response.json();
-                const cls = decisionClass(data.decision);
 
-                renderBefore(data.results);
-                renderAfter(data.results, cls, data.decision);
+                decisionBox.className = `decision-box decision-${data.decision}`;
+                decisionBox.textContent = `${data.decision === "ALLOW" ? "🟢" : data.decision === "REVIEW" ? "🟠" : "🔴"} ${data.decision}`;
+                reasonText.textContent = data.reason;
 
-                decisionBadge.className = `badge ${cls}`;
-                decisionBadge.textContent = data.decision;
+                rawJson.textContent = JSON.stringify(data, null, 2);
 
                 if (data.decision === "BLOCK") {
-                    reasonText.textContent = `${data.reason}\nNo source passed RISWIS governance before generation.`;
-                } else if (data.audit.rank_flip_detected) {
-                    reasonText.textContent = `${data.reason}\nsemantic winner ≠ policy winner`;
-                } else {
-                    reasonText.textContent = data.reason;
+                    normalView.classList.add("hidden");
+                    blockView.classList.remove("hidden");
+
+                    signals.innerHTML = "";
+                    data.results.forEach((item) => {
+                        const row = document.createElement("div");
+                        row.innerHTML =
+                            `${tierIcon(item.tier)} <strong>${item.source}</strong> | ${item.tier} | ` +
+                            `raw score ${item.raw_score} | weighted score ${item.weighted_score}`;
+                        signals.appendChild(row);
+                    });
+
+                    return;
                 }
 
+                blockView.classList.add("hidden");
+                normalView.classList.remove("hidden");
+
+                semanticWinner.textContent = `🔴 ${data.audit.semantic_winner_id}`;
+                policyWinner.textContent = `🟢 ${data.policy_winner.source} (${data.policy_winner.tier})`;
+
+                if (data.audit.rank_flip_detected) {
+                    rankFlip.className = "info-box review-box";
+                    rankFlip.textContent = "🟠 Rank flip detected: semantic winner ≠ policy winner";
+                } else {
+                    rankFlip.className = "info-box";
+                    rankFlip.style.background = "var(--blue-bg)";
+                    rankFlip.style.color = "var(--blue-text)";
+                    rankFlip.textContent = "No rank flip detected";
+                }
+
+                results.innerHTML = "";
+                data.results.forEach((item) => {
+                    const row = document.createElement("div");
+                    row.innerHTML =
+                        `${tierIcon(item.tier)} <strong>${item.source}</strong> | ${item.tier} | ` +
+                        `raw rank ${item.raw_rank} → weighted rank ${item.weighted_rank} | delta ${item.rank_delta}`;
+                    results.appendChild(row);
+                });
+
             } catch (error) {
-                decisionBadge.className = "badge block";
-                decisionBadge.textContent = "ERROR";
+                decisionBox.className = "decision-box decision-BLOCK";
+                decisionBox.textContent = "🔴 ERROR";
                 reasonText.textContent = "Could not reach RISWIS API. Please try again.";
-                beforeList.innerHTML = "";
-                afterList.innerHTML = "";
-                beforeFirst.textContent = "Unavailable";
-                afterFirst.textContent = "Unavailable";
+                rawJson.textContent = String(error);
                 console.error(error);
             }
-
-            beforeList.style.opacity = "1";
-            afterList.style.opacity = "1";
-            decisionBadge.style.opacity = "1";
-            reasonText.style.opacity = "1";
-        }
-
-        buttons.forEach((btn) => {
-            btn.addEventListener("click", () => runScenario(btn.dataset.scenario));
         });
 
-        window.addEventListener("load", () => {
-            runScenario("review");
-        });
+        updateQuery();
     </script>
 </body>
 
