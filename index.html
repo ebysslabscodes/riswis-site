@@ -463,55 +463,12 @@
     </main>
 
     <script>
-        const scenarios = {
-            review: {
-                query: "why am I always tired",
-                decision: "REVIEW",
-                decisionClass: "review",
-                reason: "FLIP DETECTED\nBlog ranked #1 → demoted by policy",
-                before: [
-                    { source: "Blog", score: "0.90", tier: "T3" },
-                    { source: "Mayo Clinic", score: "0.82", tier: "T1" },
-                    { source: "WebMD", score: "0.79", tier: "T2" }
-                ],
-                after: [
-                    { source: "Mayo Clinic", score: "1.23", tier: "T1", delta: "+1" },
-                    { source: "WebMD", score: "0.79", tier: "T2", delta: "+1" },
-                    { source: "Blog", score: "0.63", tier: "T3", delta: "-2" }
-                ]
-            },
-            allow: {
-                query: "symptoms of dehydration",
-                decision: "ALLOW",
-                decisionClass: "allow",
-                reason: "NO CHANGE\nHigh confidence ranking with a clear policy winner.",
-                before: [
-                    { source: "Mayo Clinic", score: "0.90", tier: "T1" },
-                    { source: "WebMD", score: "0.80", tier: "T2" },
-                    { source: "Blog", score: "0.60", tier: "T3" }
-                ],
-                after: [
-                    { source: "Mayo Clinic", score: "1.35", tier: "T1", delta: "0" },
-                    { source: "WebMD", score: "0.80", tier: "T2", delta: "0" },
-                    { source: "Blog", score: "0.42", tier: "T3", delta: "0" }
-                ]
-            },
-            block: {
-                query: "quantum entanglement particle spin alignment",
-                decision: "BLOCK",
-                decisionClass: "block",
-                reason: "BLOCKED\nNo meaningful semantic signal.",
-                before: [
-                    { source: "Mayo Clinic", score: "0.02", tier: "T1" },
-                    { source: "WebMD", score: "0.01", tier: "T2" },
-                    { source: "Blog", score: "0.00", tier: "T3" }
-                ],
-                after: [
-                    { source: "Mayo Clinic", score: "0.03", tier: "T1", delta: "0" },
-                    { source: "WebMD", score: "0.01", tier: "T2", delta: "0" },
-                    { source: "Blog", score: "0.00", tier: "T3", delta: "0" }
-                ]
-            }
+        const API_URL = "https://riswis-api-demo.onrender.com/demo";
+
+        const scenarioQueries = {
+            review: "why am i always tired",
+            allow: "fatigue medical causes",
+            block: "quantum particle spin alignment"
         };
 
         const beforeList = document.getElementById("beforeList");
@@ -524,44 +481,16 @@
         const buttons = document.querySelectorAll(".scenario-btn");
 
         function deltaClass(delta) {
-            if (!delta) return "";
-            if (delta.startsWith("-")) return "orange";
-            if (delta.startsWith("+")) return "green";
+            if (delta > 0) return "green";
+            if (delta < 0) return "orange";
             return "";
         }
 
-        function deltaLabel(delta) {
-            if (!delta || delta === "0") return "no change";
-            return delta;
-        }
-
-        function renderList(container, items, side, decisionClass) {
-            container.innerHTML = "";
-
-            items.forEach((item, index) => {
-                const row = document.createElement("div");
-                row.className = "item";
-
-                if (index === 0 && side === "left") row.classList.add("top-left");
-                if (index === 0 && side === "right") {
-                    row.classList.add("top-right");
-                    row.classList.add(decisionClass);
-                }
-
-                row.innerHTML = `
-                    <div class="item-header">
-                        <span class="rank">${index + 1}.</span>
-                        <span class="source">${item.source}</span>
-                        <span class="score">${item.score}</span>
-                    </div>
-                    <div class="meta">
-                        <span>${item.tier}</span>
-                        <span class="delta ${deltaClass(item.delta)}">${item.delta ? deltaLabel(item.delta) : ""}</span>
-                    </div>
-                `;
-
-                container.appendChild(row);
-            });
+        function tierLabel(tier) {
+            if (tier === "T1") return "T1";
+            if (tier === "T2") return "T2";
+            if (tier === "T3") return "T3";
+            return tier || "";
         }
 
         function setActiveButton(name) {
@@ -573,34 +502,138 @@
             });
         }
 
-        function runScenario(name) {
-            const scenario = scenarios[name];
+        function renderBefore(items) {
+            beforeList.innerHTML = "";
+
+            const semanticSorted = [...items].sort((a, b) => a.raw_rank - b.raw_rank);
+
+            semanticSorted.forEach((item, index) => {
+                const row = document.createElement("div");
+                row.className = "item";
+                if (index === 0) row.classList.add("top-left");
+
+                row.innerHTML = `
+                <div class="item-header">
+                    <span class="rank">${item.raw_rank}.</span>
+                    <span class="source">${item.source}</span>
+                    <span class="score">${item.raw_score}</span>
+                </div>
+                <div class="meta">
+                    <span>${tierLabel(item.tier)}</span>
+                    <span>semantic rank</span>
+                </div>
+            `;
+
+                beforeList.appendChild(row);
+            });
+
+            beforeFirst.textContent = semanticSorted[0]?.source || "None";
+        }
+
+        function renderAfter(items, decisionClass, decision) {
+            afterList.innerHTML = "";
+
+            items.forEach((item, index) => {
+                const row = document.createElement("div");
+                row.className = "item";
+
+                if (index === 0) {
+                    row.classList.add("top-right");
+                    row.classList.add(decisionClass);
+                }
+
+                const delta = item.rank_delta;
+                const deltaText = delta === 0 ? "no change" : (delta > 0 ? `+${delta}` : `${delta}`);
+
+                row.innerHTML = `
+                <div class="item-header">
+                    <span class="rank">${item.weighted_rank}.</span>
+                    <span class="source">${item.source}</span>
+                    <span class="score">${item.weighted_score}</span>
+                </div>
+                <div class="meta">
+                    <span>${tierLabel(item.tier)}</span>
+                    <span class="delta ${deltaClass(delta)}">${deltaText}</span>
+                </div>
+            `;
+
+                afterList.appendChild(row);
+            });
+
+            if (decision === "BLOCK") {
+                afterFirst.textContent = "Nothing passes";
+            } else {
+                afterFirst.textContent = items[0]?.source || "None";
+            }
+        }
+
+        function decisionClass(decision) {
+            if (decision === "ALLOW") return "allow";
+            if (decision === "REVIEW") return "review";
+            if (decision === "BLOCK") return "block";
+            return "review";
+        }
+
+        async function runScenario(name) {
             setActiveButton(name);
 
-            queryLine.innerHTML = `Query: <strong>${scenario.query}</strong>`;
+            const query = scenarioQueries[name];
+            queryLine.innerHTML = `Query: <strong>${query}</strong>`;
 
             beforeList.style.opacity = "0.18";
             afterList.style.opacity = "0.18";
             decisionBadge.style.opacity = "0.18";
             reasonText.style.opacity = "0.18";
 
-            setTimeout(() => {
-                renderList(beforeList, scenario.before, "left", scenario.decisionClass);
-                renderList(afterList, scenario.after, "right", scenario.decisionClass);
+            decisionBadge.className = "badge review";
+            decisionBadge.textContent = "RUNNING";
+            reasonText.textContent = "Calling live RISWIS API...";
 
-                beforeFirst.textContent = scenario.before[0].source;
-                afterFirst.textContent = scenario.after[0].source;
+            try {
+                const response = await fetch(API_URL, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ query })
+                });
 
-                decisionBadge.className = `badge ${scenario.decisionClass}`;
-                decisionBadge.textContent = scenario.decision;
+                if (!response.ok) {
+                    throw new Error(`API error: ${response.status}`);
+                }
 
-                reasonText.textContent = scenario.reason;
+                const data = await response.json();
+                const cls = decisionClass(data.decision);
 
-                beforeList.style.opacity = "1";
-                afterList.style.opacity = "1";
-                decisionBadge.style.opacity = "1";
-                reasonText.style.opacity = "1";
-            }, 150);
+                renderBefore(data.results);
+                renderAfter(data.results, cls, data.decision);
+
+                decisionBadge.className = `badge ${cls}`;
+                decisionBadge.textContent = data.decision;
+
+                if (data.decision === "BLOCK") {
+                    reasonText.textContent = `${data.reason}\nNo source passed RISWIS governance before generation.`;
+                } else if (data.audit.rank_flip_detected) {
+                    reasonText.textContent = `${data.reason}\nsemantic winner ≠ policy winner`;
+                } else {
+                    reasonText.textContent = data.reason;
+                }
+
+            } catch (error) {
+                decisionBadge.className = "badge block";
+                decisionBadge.textContent = "ERROR";
+                reasonText.textContent = "Could not reach RISWIS API. Please try again.";
+                beforeList.innerHTML = "";
+                afterList.innerHTML = "";
+                beforeFirst.textContent = "Unavailable";
+                afterFirst.textContent = "Unavailable";
+                console.error(error);
+            }
+
+            beforeList.style.opacity = "1";
+            afterList.style.opacity = "1";
+            decisionBadge.style.opacity = "1";
+            reasonText.style.opacity = "1";
         }
 
         buttons.forEach((btn) => {
