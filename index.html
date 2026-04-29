@@ -12,33 +12,39 @@
 
     <meta property="og:title" content="RISWIS Applied — Controls what data AI trusts" />
     <meta property="og:description" content="Similarity finds answers. Governance decides trust." />
-    <meta property="og:image" content="https://riswis.com/preview.png?v=3" />
+    <meta property="og:image" content="https://riswis.com/preview.png?v=4" />
     <meta property="og:url" content="https://riswis.com" />
     <meta property="og:type" content="website" />
 
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="RISWIS Applied — Controls what data AI trusts" />
     <meta name="twitter:description" content="Similarity finds answers. Governance decides trust." />
-    <meta name="twitter:image" content="https://riswis.com/preview.png?v=3" />
+    <meta name="twitter:image" content="https://riswis.com/preview.png?v=4" />
 
     <script data-goatcounter="https://riswis.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 
     <style>
         :root {
-            --bg: #0e1117;
-            --panel: #151922;
-            --input: #262933;
-            --line: #343946;
-            --text: #f5f5f5;
-            --muted: #a0a4ad;
+            --bg: #000000;
+            --panel: #0a0a0a;
+            --panel-2: #101010;
+            --input: #171717;
+            --line: #272727;
+            --text: #ffffff;
+            --muted: #9a9a9a;
+            --soft: #d8d8d8;
+
+            --orange: #ff7a18;
+            --orange-soft: rgba(255, 122, 24, 0.16);
+            --orange-line: rgba(255, 122, 24, 0.55);
+
             --green: #35d07f;
-            --green-bg: rgba(53, 208, 127, 0.16);
-            --orange: #f58a3a;
-            --orange-bg: rgba(245, 138, 58, 0.18);
+            --green-soft: rgba(53, 208, 127, 0.15);
+            --green-line: rgba(53, 208, 127, 0.55);
+
             --red: #ff4d5a;
-            --red-bg: rgba(255, 77, 90, 0.18);
-            --blue-bg: #1f314b;
-            --blue-text: #72a7ff;
+            --red-soft: rgba(255, 77, 90, 0.15);
+            --red-line: rgba(255, 77, 90, 0.55);
         }
 
         * {
@@ -54,205 +60,348 @@
 
         .page {
             width: 100%;
-            max-width: 980px;
+            max-width: 1040px;
             margin: 0 auto;
-            padding: 72px 22px 70px;
+            padding: 56px 22px 70px;
         }
 
-        h1 {
-            font-size: clamp(44px, 7vw, 72px);
-            margin: 0 0 28px;
+        .brand-card {
+            width: min(100%, 620px);
+            background: linear-gradient(135deg, #ff7a18, #ff9a3d);
+            color: #fff;
+            border-radius: 24px;
+            padding: 24px 30px;
+            font-size: clamp(38px, 7vw, 74px);
+            font-weight: 900;
+            letter-spacing: 0.02em;
             line-height: 1;
-            letter-spacing: -0.04em;
+            position: relative;
+            margin-bottom: 26px;
+            box-shadow: 0 18px 45px rgba(255, 122, 24, 0.14);
+        }
+
+        .brand-card::after {
+            content: "↗";
+            position: absolute;
+            right: 28px;
+            top: 20px;
+            font-size: 0.8em;
             font-weight: 800;
         }
 
+        h1 {
+            font-size: clamp(38px, 6vw, 68px);
+            line-height: 1.02;
+            margin: 0 0 14px;
+            font-weight: 900;
+            letter-spacing: -0.045em;
+        }
+
+        .green-word {
+            color: var(--green);
+        }
+
         .caption {
+            max-width: 850px;
             color: var(--muted);
             font-size: 20px;
             line-height: 1.45;
             margin-bottom: 34px;
         }
 
+        .demo-shell {
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: 24px;
+            padding: 26px;
+            margin-top: 28px;
+        }
+
         label {
             display: block;
-            font-size: 18px;
+            font-size: 16px;
+            color: var(--soft);
             margin-bottom: 10px;
-            color: #fff;
+            font-weight: 700;
         }
 
         select,
         input {
             width: 100%;
-            border: 1px solid transparent;
             background: var(--input);
+            border: 1px solid var(--line);
             color: var(--text);
-            border-radius: 12px;
+            border-radius: 14px;
             padding: 18px 18px;
-            font-size: 22px;
+            font-size: 21px;
             outline: none;
-            margin-bottom: 28px;
+            margin-bottom: 24px;
+        }
+
+        select:focus,
+        input:focus {
+            border-color: var(--orange-line);
         }
 
         input:disabled {
-            opacity: 0.75;
             color: var(--muted);
+            opacity: 0.9;
         }
 
         .guided-note {
-            background: var(--blue-bg);
-            color: var(--blue-text);
-            border-radius: 12px;
-            padding: 20px 22px;
-            font-size: 20px;
+            background: var(--orange-soft);
+            border: 1px solid var(--orange-line);
+            color: #ffd2b3;
+            border-radius: 14px;
+            padding: 18px 20px;
+            font-size: 18px;
             line-height: 1.45;
-            margin-bottom: 26px;
+            margin-bottom: 24px;
         }
 
-        button {
-            background: transparent;
+        .run-btn {
+            background: var(--orange);
             color: #fff;
-            border: 1px solid var(--line);
-            border-radius: 10px;
-            padding: 15px 20px;
-            font-size: 22px;
+            border: 1px solid var(--orange);
+            border-radius: 999px;
+            padding: 15px 24px;
+            font-size: 20px;
+            font-weight: 800;
             cursor: pointer;
-            transition: 0.18s ease;
+            transition: transform 0.16s ease, opacity 0.16s ease;
         }
 
-        button:hover {
-            border-color: var(--orange);
-            color: var(--orange);
+        .run-btn:hover {
+            transform: translateY(-1px);
+            opacity: 0.92;
+        }
+
+        .output {
+            margin-top: 40px;
+        }
+
+        .hidden {
+            display: none;
         }
 
         .section {
-            margin-top: 46px;
+            margin-top: 38px;
         }
 
         .section h2 {
-            font-size: 38px;
-            margin: 0 0 24px;
-            letter-spacing: -0.03em;
+            font-size: clamp(30px, 4vw, 44px);
+            margin: 0 0 20px;
+            letter-spacing: -0.04em;
+            font-weight: 900;
         }
 
-        .decision-box,
-        .info-box,
-        .winner-box {
-            border-radius: 12px;
-            padding: 22px 24px;
-            font-size: 22px;
-            line-height: 1.45;
-            margin-bottom: 22px;
+        .decision-box {
+            border-radius: 18px;
+            padding: 24px;
+            font-size: 25px;
+            font-weight: 900;
+            margin-bottom: 18px;
+            border: 1px solid transparent;
         }
 
-        .decision-ALLOW,
-        .allow-box {
-            background: var(--green-bg);
-            color: #9ff0c5;
+        .decision-ALLOW {
+            color: #b9ffd7;
+            background: var(--green-soft);
+            border-color: var(--green-line);
         }
 
-        .decision-REVIEW,
-        .review-box {
-            background: var(--orange-bg);
+        .decision-REVIEW {
             color: #ffd0a8;
+            background: var(--orange-soft);
+            border-color: var(--orange-line);
         }
 
-        .decision-BLOCK,
-        .block-box {
-            background: var(--red-bg);
-            color: #ff9ca4;
+        .decision-BLOCK {
+            color: #ffb1b8;
+            background: var(--red-soft);
+            border-color: var(--red-line);
+        }
+
+        .reason {
+            color: var(--soft);
+            font-size: 22px;
+            line-height: 1.5;
         }
 
         .divider {
             height: 1px;
             background: var(--line);
-            margin: 42px 0;
+            margin: 40px 0;
         }
 
         .winner-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 26px;
-            margin-top: 22px;
+            gap: 24px;
         }
 
-        .winner-title {
-            font-size: 34px;
+        .mini-title {
+            font-size: clamp(26px, 3.2vw, 38px);
+            font-weight: 900;
+            margin-bottom: 14px;
+            letter-spacing: -0.035em;
+        }
+
+        .winner-card {
+            background: var(--panel-2);
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            padding: 22px;
+            font-size: 22px;
+            line-height: 1.45;
+        }
+
+        .winner-card.semantic {
+            border-color: var(--orange-line);
+        }
+
+        .winner-card.policy {
+            border-color: var(--green-line);
+        }
+
+        .rank-flip-card {
+            background: var(--panel-2);
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            padding: 22px;
+            font-size: 22px;
+            line-height: 1.45;
+        }
+
+        .rank-flip-card.review {
+            color: #ffd0a8;
+            background: var(--orange-soft);
+            border-color: var(--orange-line);
+        }
+
+        .rank-flip-card.neutral {
+            color: var(--soft);
+            background: var(--panel-2);
+        }
+
+        .block-card {
+            background: var(--red-soft);
+            border: 1px solid var(--red-line);
+            color: #ffb1b8;
+            border-radius: 18px;
+            padding: 22px;
+            font-size: 22px;
+            line-height: 1.45;
             font-weight: 800;
-            margin-bottom: 20px;
-            letter-spacing: -0.03em;
+        }
+
+        .plain-text {
+            color: var(--soft);
+            font-size: 21px;
+            line-height: 1.55;
         }
 
         .results-list {
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 14px;
+            margin-top: 10px;
+        }
+
+        .result-row {
+            background: var(--panel-2);
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            padding: 18px 20px;
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 14px;
+            align-items: center;
+            font-size: 18px;
+        }
+
+        .source-name {
             font-size: 21px;
-            line-height: 1.4;
+            font-weight: 900;
         }
 
-        .dot {
+        .tier-pill {
             display: inline-block;
-            width: 19px;
-            height: 19px;
-            border-radius: 50%;
-            margin-right: 10px;
-            vertical-align: -2px;
+            color: var(--muted);
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            padding: 4px 10px;
+            font-size: 13px;
+            margin-left: 8px;
+            vertical-align: 2px;
         }
 
-        .dot.green {
-            background: var(--green);
+        .rank-meta {
+            color: var(--muted);
+            margin-top: 8px;
+            font-size: 16px;
+            line-height: 1.45;
         }
 
-        .dot.orange {
-            background: var(--orange);
+        .delta {
+            font-weight: 900;
+            color: var(--orange);
+            white-space: nowrap;
         }
 
-        .dot.red {
-            background: var(--red);
+        .delta.zero {
+            color: var(--muted);
+        }
+
+        .score-line {
+            color: var(--muted);
+            font-size: 16px;
+            margin-top: 8px;
         }
 
         details {
             border: 1px solid var(--line);
-            border-radius: 12px;
+            border-radius: 16px;
             padding: 18px 20px;
-            margin-top: 28px;
+            margin-top: 30px;
+            background: var(--panel-2);
         }
 
         summary {
             cursor: pointer;
-            font-size: 22px;
-            font-weight: 700;
+            font-size: 20px;
+            font-weight: 900;
         }
 
         pre {
             overflow-x: auto;
             white-space: pre-wrap;
             word-break: break-word;
-            color: #d8dee9;
-            font-size: 15px;
+            color: #d7d7d7;
+            font-size: 14px;
             line-height: 1.5;
+            margin-top: 18px;
         }
 
         .contact {
             text-align: center;
-            margin-top: 58px;
+            margin-top: 54px;
         }
 
         .contact a {
             display: inline-block;
             color: #fff;
             text-decoration: none;
-            border: 1px solid var(--line);
+            border: 1px solid var(--orange-line);
             border-radius: 999px;
-            padding: 14px 28px;
+            padding: 15px 30px;
             font-size: 18px;
-            font-weight: 700;
+            font-weight: 900;
+            background: rgba(255, 122, 24, 0.08);
         }
 
         .contact a:hover {
-            color: var(--orange);
-            border-color: var(--orange);
+            background: var(--orange-soft);
         }
 
         .footer {
@@ -267,13 +416,13 @@
             color: #fff;
         }
 
-        .hidden {
-            display: none;
-        }
-
         @media (max-width: 760px) {
             .page {
-                padding-top: 42px;
+                padding: 34px 16px 56px;
+            }
+
+            .demo-shell {
+                padding: 18px;
             }
 
             .winner-grid {
@@ -282,13 +431,12 @@
 
             select,
             input,
-            button {
+            .run-btn {
                 font-size: 18px;
             }
 
-            .section h2,
-            .winner-title {
-                font-size: 30px;
+            .result-row {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -296,84 +444,91 @@
 
 <body>
     <main class="page">
-        <h1>RISWIS Applied</h1>
+        <div class="brand-card">RISWIS</div>
+
+        <h1>
+            Similarity finds answers.<br />
+            <span class="green-word">Governance decides trust.</span>
+        </h1>
 
         <div class="caption">
-            Guided demo: RISWIS shows how retrieval is governed before the LLM sees anything
-            (ALLOW · REVIEW · BLOCK).
+            RISWIS Applied is a governance layer before the LLM sees anything.
+            This live demo shows three outcomes: ALLOW, REVIEW, and BLOCK.
         </div>
 
-        <label for="scenario">Choose a demo scenario</label>
-        <select id="scenario">
-            <option value="review">🟠 REVIEW / Rank Flip — Fatigue</option>
-            <option value="allow">🟢 ALLOW / Clean Pass — Trusted source wins</option>
-            <option value="block">🔴 BLOCK / No Trusted Signal — Irrelevant query</option>
-        </select>
+        <section class="demo-shell">
+            <label for="scenario">Choose a demo scenario</label>
+            <select id="scenario">
+                <option value="review">🟠 REVIEW / Rank Flip — Fatigue</option>
+                <option value="allow">🟢 ALLOW / Clean Pass — Trusted source wins</option>
+                <option value="block">🔴 BLOCK / No Trusted Signal — Irrelevant query</option>
+            </select>
 
-        <label for="query">Selected query</label>
-        <input id="query" disabled value="why am i always tired" />
+            <label for="query">Selected query</label>
+            <input id="query" disabled value="why am i always tired" />
 
-        <div class="guided-note">
-            This is a guided demo. Each scenario shows a specific RISWIS governance behavior.
-        </div>
-
-        <button id="runBtn">Run RISWIS</button>
-
-        <section id="output" class="hidden">
-            <div class="section">
-                <h2>Decision</h2>
-                <div id="decisionBox" class="decision-box"></div>
-                <div id="reasonText" style="font-size:22px; line-height:1.5;"></div>
+            <div class="guided-note">
+                This is a guided demo. Each scenario shows a specific RISWIS governance behavior.
             </div>
 
-            <div class="divider"></div>
+            <button id="runBtn" class="run-btn">Run RISWIS</button>
 
-            <div id="normalView">
-                <div class="winner-grid">
-                    <div>
-                        <div class="winner-title">Semantic Winner</div>
-                        <div id="semanticWinner" class="winner-box block-box"></div>
-                    </div>
-
-                    <div>
-                        <div class="winner-title">Policy Winner</div>
-                        <div id="policyWinner" class="winner-box allow-box"></div>
-                    </div>
+            <section id="output" class="output hidden">
+                <div class="section">
+                    <h2>Decision</h2>
+                    <div id="decisionBox" class="decision-box"></div>
+                    <div id="reasonText" class="reason"></div>
                 </div>
 
                 <div class="divider"></div>
 
-                <div class="section">
-                    <h2>Rank Flip</h2>
-                    <div id="rankFlip" class="info-box"></div>
-                </div>
+                <div id="normalView">
+                    <div class="winner-grid">
+                        <div>
+                            <div class="mini-title">Top by similarity</div>
+                            <div id="semanticWinner" class="winner-card semantic"></div>
+                        </div>
 
-                <div class="section">
-                    <h2>Results</h2>
-                    <div id="results" class="results-list"></div>
-                </div>
-            </div>
-
-            <div id="blockView" class="hidden">
-                <div class="section">
-                    <h2>Blocked Before Generation</h2>
-                    <div class="winner-box block-box">🔴 No source passed RISWIS governance.</div>
-
-                    <h2 style="margin-top:36px;">Why It Was Blocked</h2>
-                    <div style="font-size:22px; line-height:1.5;">
-                        The retrieved candidates were too weak to safely pass forward.
-                        RISWIS stopped the result before the LLM could use it.
+                        <div>
+                            <div class="mini-title">Final by policy</div>
+                            <div id="policyWinner" class="winner-card policy"></div>
+                        </div>
                     </div>
 
-                    <h2 style="margin-top:36px;">Retrieved Signals</h2>
-                    <div id="signals" class="results-list"></div>
-                </div>
-            </div>
+                    <div class="divider"></div>
 
-            <details>
-                <summary>Raw API Output</summary>
-                <pre id="rawJson"></pre>
-            </details>
+                    <div class="section">
+                        <h2>Rank Movement</h2>
+                        <div id="rankFlip" class="rank-flip-card"></div>
+                    </div>
+
+                    <div class="section">
+                        <h2>Governed Ranking</h2>
+                        <div id="results" class="results-list"></div>
+                    </div>
+                </div>
+
+                <div id="blockView" class="hidden">
+                    <div class="section">
+                        <h2>Blocked Before Generation</h2>
+                        <div class="block-card">🔴 Nothing was allowed to reach the LLM.</div>
+
+                        <h2 style="margin-top:34px;">Why It Was Blocked</h2>
+                        <div class="plain-text">
+                            The retrieved candidates were too weak to safely pass forward.
+                            RISWIS stopped the result before the LLM could use it.
+                        </div>
+
+                        <h2 style="margin-top:34px;">Retrieved Signals</h2>
+                        <div id="signals" class="results-list"></div>
+                    </div>
+                </div>
+
+                <details>
+                    <summary>Raw API Output</summary>
+                    <pre id="rawJson"></pre>
+                </details>
+            </section>
         </section>
 
         <div class="contact">
@@ -412,11 +567,43 @@
         const normalView = document.getElementById("normalView");
         const blockView = document.getElementById("blockView");
 
-        function tierIcon(tier) {
-            if (tier === "T1") return '<span class="dot green"></span>';
-            if (tier === "T2") return '<span class="dot orange"></span>';
-            if (tier === "T3") return '<span class="dot red"></span>';
-            return "";
+        function decisionIcon(decision) {
+            if (decision === "ALLOW") return "🟢";
+            if (decision === "REVIEW") return "🟠";
+            if (decision === "BLOCK") return "🔴";
+            return "⚪";
+        }
+
+        function deltaText(delta) {
+            if (delta === 0) return "no movement";
+            if (delta > 0) return `▲ +${delta}`;
+            return `▼ ${delta}`;
+        }
+
+        function rowHTML(item, mode = "rank") {
+            const deltaClass = item.rank_delta === 0 ? "delta zero" : "delta";
+
+            if (mode === "signal") {
+                return `
+          <div class="result-row">
+            <div>
+              <div class="source-name">${item.source}<span class="tier-pill">${item.tier}</span></div>
+              <div class="score-line">raw score ${item.raw_score} · weighted score ${item.weighted_score}</div>
+            </div>
+            <div class="${deltaClass}">${item.weighted_score}</div>
+          </div>
+        `;
+            }
+
+            return `
+        <div class="result-row">
+          <div>
+            <div class="source-name">${item.source}<span class="tier-pill">${item.tier}</span></div>
+            <div class="rank-meta">raw rank ${item.raw_rank} → final rank ${item.weighted_rank}</div>
+          </div>
+          <div class="${deltaClass}">${deltaText(item.rank_delta)}</div>
+        </div>
+      `;
         }
 
         function updateQuery() {
@@ -439,9 +626,7 @@
             try {
                 const response = await fetch(API_URL, {
                     method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
+                    headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ query })
                 });
 
@@ -452,53 +637,42 @@
                 const data = await response.json();
 
                 decisionBox.className = `decision-box decision-${data.decision}`;
-                decisionBox.textContent = `${data.decision === "ALLOW" ? "🟢" : data.decision === "REVIEW" ? "🟠" : "🔴"} ${data.decision}`;
+                decisionBox.textContent = `${decisionIcon(data.decision)} ${data.decision}`;
                 reasonText.textContent = data.reason;
-
                 rawJson.textContent = JSON.stringify(data, null, 2);
 
                 if (data.decision === "BLOCK") {
                     normalView.classList.add("hidden");
                     blockView.classList.remove("hidden");
-
-                    signals.innerHTML = "";
-                    data.results.forEach((item) => {
-                        const row = document.createElement("div");
-                        row.innerHTML =
-                            `${tierIcon(item.tier)} <strong>${item.source}</strong> | ${item.tier} | ` +
-                            `raw score ${item.raw_score} | weighted score ${item.weighted_score}`;
-                        signals.appendChild(row);
-                    });
-
+                    signals.innerHTML = data.results.map((item) => rowHTML(item, "signal")).join("");
                     return;
                 }
 
                 blockView.classList.add("hidden");
                 normalView.classList.remove("hidden");
 
-                semanticWinner.textContent = `🔴 ${data.audit.semantic_winner_id}`;
-                policyWinner.textContent = `🟢 ${data.policy_winner.source} (${data.policy_winner.tier})`;
+                semanticWinner.innerHTML = `
+          <strong>${data.audit.semantic_winner_id}</strong>
+          <div class="rank-meta">Highest raw semantic score before governance.</div>
+        `;
+
+                policyWinner.innerHTML = `
+          <strong>${data.policy_winner.source}</strong><span class="tier-pill">${data.policy_winner.tier}</span>
+          <div class="rank-meta">Selected after RISWIS policy weighting.</div>
+        `;
 
                 if (data.audit.rank_flip_detected) {
-                    rankFlip.className = "info-box review-box";
+                    rankFlip.className = "rank-flip-card review";
                     rankFlip.textContent = "🟠 Rank flip detected: semantic winner ≠ policy winner";
                 } else {
-                    rankFlip.className = "info-box";
-                    rankFlip.style.background = "var(--blue-bg)";
-                    rankFlip.style.color = "var(--blue-text)";
-                    rankFlip.textContent = "No rank flip detected";
+                    rankFlip.className = "rank-flip-card neutral";
+                    rankFlip.textContent = "No rank movement detected. Similarity and policy agreed.";
                 }
 
-                results.innerHTML = "";
-                data.results.forEach((item) => {
-                    const row = document.createElement("div");
-                    row.innerHTML =
-                        `${tierIcon(item.tier)} <strong>${item.source}</strong> | ${item.tier} | ` +
-                        `raw rank ${item.raw_rank} → weighted rank ${item.weighted_rank} | delta ${item.rank_delta}`;
-                    results.appendChild(row);
-                });
+                results.innerHTML = data.results.map((item) => rowHTML(item)).join("");
 
             } catch (error) {
+                output.classList.remove("hidden");
                 decisionBox.className = "decision-box decision-BLOCK";
                 decisionBox.textContent = "🔴 ERROR";
                 reasonText.textContent = "Could not reach RISWIS API. Please try again.";
