@@ -406,7 +406,18 @@
             background: rgba(255, 122, 24, 0.08);
         }
 
-        .contact a:hover {
+        .primary-cta {
+            background: var(--orange);
+            border-color: var(--orange);
+            color: #fff;
+        }
+
+        .primary-cta:hover {
+            background: #ff8c2a;
+            border-color: #ff8c2a;
+        }
+
+        .contact a:not(.primary-cta):hover {
             background: var(--orange-soft);
         }
 
@@ -538,7 +549,15 @@
         </section>
 
         <div class="contact">
-            <a href="mailto:ronreed@ebysslabs.com">Contact about RISWIS</a>
+            <a href="mailto:ronreed@ebysslabs.com">
+                Contact about RISWIS
+            </a>
+
+            <br /><br />
+
+            <a class="primary-cta" href="mailto:ronreed@ebysslabs.com?subject=RISWIS API Access Request&body=...">
+                Request API Access
+            </a>
         </div>
 
         <div class="footer">
