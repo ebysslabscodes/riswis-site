@@ -176,6 +176,12 @@
             opacity: 0.92;
         }
 
+        .run-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
         .output {
             margin-top: 40px;
         }
@@ -610,9 +616,30 @@
             queryInput.value = scenarios[scenarioSelect.value];
         }
 
-        scenarioSelect.addEventListener("change", updateQuery);
+        scenarioSelect.addEventListener("change", () => {
+            updateQuery();
+
+            // 🔥 UX FIX: reset output when scenario changes
+            output.classList.add("hidden");
+
+            decisionBox.textContent = "";
+            reasonText.textContent = "";
+
+            results.innerHTML = "";
+            signals.innerHTML = "";
+
+            normalView.classList.add("hidden");
+            blockView.classList.add("hidden");
+
+            rawJson.textContent = "";
+        });
+
 
         runBtn.addEventListener("click", async () => {
+
+            runBtn.textContent = "Running...";
+            runBtn.disabled = true;
+
             const query = queryInput.value;
 
             output.classList.remove("hidden");
@@ -634,7 +661,11 @@
                     throw new Error(`API error: ${response.status}`);
                 }
 
+
                 const data = await response.json();
+
+                runBtn.textContent = "Run RISWIS";
+                runBtn.disabled = false;
 
                 decisionBox.className = `decision-box decision-${data.decision}`;
                 decisionBox.textContent = `${decisionIcon(data.decision)} ${data.decision}`;
@@ -645,6 +676,8 @@
                     normalView.classList.add("hidden");
                     blockView.classList.remove("hidden");
                     signals.innerHTML = data.results.map((item) => rowHTML(item, "signal")).join("");
+                    runBtn.textContent = "Run RISWIS";
+                    runBtn.disabled = false;
                     return;
                 }
 
@@ -672,6 +705,10 @@
                 results.innerHTML = data.results.map((item) => rowHTML(item)).join("");
 
             } catch (error) {
+
+                runBtn.textContent = "Run RISWIS";
+                runBtn.disabled = false;
+
                 output.classList.remove("hidden");
                 decisionBox.className = "decision-box decision-BLOCK";
                 decisionBox.textContent = "🔴 ERROR";
