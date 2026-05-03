@@ -5,7 +5,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>RISWIS Applied</title>
-    <meta name="description" content="RISWIS Applied — governance layer before the LLM sees anything." />
+    <meta name="description" content="Stops bad retrieval from becoming bad answers." />
 
     <link rel="icon" type="image/png" href="favicon.png" />
     <link rel="canonical" href="https://riswis.com" />
@@ -469,7 +469,7 @@
         </h1>
 
         <div class="caption">
-            RISWIS Applied is a governance layer before the LLM sees anything.
+            Stops bad retrieval from becoming bad answers.<br>
             This live demo shows three outcomes: ALLOW, REVIEW, and BLOCK.
         </div>
 
@@ -485,7 +485,8 @@
             <input id="query" disabled value="why am i always tired" />
 
             <div class="guided-note">
-                This is a guided demo. Each scenario shows a specific RISWIS governance behavior.
+                Real RISWIS decisions on real queries.<br><br>
+                Each scenario shows what changes before the model responds.
             </div>
 
             <button id="runBtn" class="run-btn">Run RISWIS</button>
@@ -706,7 +707,7 @@
 
                 semanticWinner.innerHTML = `
           <strong>${data.audit.semantic_winner_id}</strong>
-          <div class="rank-meta">Highest raw semantic score before governance.</div>
+          <div class="rank-meta">Top result by similarity (what most systems use).</div>
         `;
 
                 policyWinner.innerHTML = `
@@ -716,7 +717,7 @@
 
                 if (data.audit.rank_flip_detected) {
                     rankFlip.className = "rank-flip-card review";
-                    rankFlip.textContent = "🟠 Rank flip detected: semantic winner ≠ policy winner";
+                    rankFlip.textContent = "⚠️ The top result changed after trust was applied";
                 } else {
                     rankFlip.className = "rank-flip-card neutral";
                     rankFlip.textContent = "No rank movement detected. Similarity and policy agreed.";
